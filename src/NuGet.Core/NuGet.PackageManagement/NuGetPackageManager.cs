@@ -2964,14 +2964,12 @@ namespace NuGet.PackageManagement
                 }
                 else
                 {
-                    if (!nugetProjectActionsLookup.ContainsKey(buildIntegratedProject.MSBuildProjectPath))
+                    if (!nugetProjectActionsLookup.TryGetValue(buildIntegratedProject.MSBuildProjectPath, out nuGetProjectActions))
                     {
                         throw new ArgumentException(
                             message: string.Format(CultureInfo.CurrentCulture, Strings.UnableToFindPathInLookupOrList, nameof(nugetProjectActionsLookup), buildIntegratedProject.MSBuildProjectPath, nameof(packageIdentity), nameof(primarySources)),
                             paramName: nameof(nugetProjectActionsLookup));
                     }
-
-                    nuGetProjectActions = nugetProjectActionsLookup[buildIntegratedProject.MSBuildProjectPath];
 
                     if (nuGetProjectActions.Length == 0)
                     {
