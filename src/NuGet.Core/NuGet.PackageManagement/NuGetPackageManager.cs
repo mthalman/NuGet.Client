@@ -163,7 +163,7 @@ namespace NuGet.PackageManagement
                     var pathContext = NuGetPathContext.Create(Settings);
 
                     // count = FallbackPackageFolders.Count + 1 for UserPackageFolder
-                    var count = (pathContext.FallbackPackageFolders?.Count() ?? 0) + 1;
+                    var count = pathContext.FallbackPackageFolders.Count + 1;
                     var folders = new List<string>(count)
                     {
                         pathContext.UserPackageFolder
