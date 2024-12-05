@@ -29,7 +29,6 @@ namespace NuGet.PackageManagement.UI
 #pragma warning disable CS0618 // Type or member is obsolete
             _markdownPreview = new PreviewBuilder().Build();
 #pragma warning restore CS0618 // Type or member is obsolete
-            descriptionMarkdownPreview.Content = _markdownPreview.VisualElement;
         }
 
         public ReadmePreviewViewModel ReadmeViewModel { get => (ReadmePreviewViewModel)DataContext; }
@@ -71,6 +70,7 @@ namespace NuGet.PackageManagement.UI
         {
             try
             {
+                descriptionMarkdownPreview.Content = descriptionMarkdownPreview.Content ?? _markdownPreview.VisualElement;
                 if (!string.IsNullOrWhiteSpace(ReadmeViewModel.ReadmeMarkdown))
                 {
                     await _markdownPreview.UpdateContentAsync(ReadmeViewModel.ReadmeMarkdown, ScrollHint.None);
