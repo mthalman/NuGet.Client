@@ -2905,6 +2905,8 @@ namespace NuGet.Commands.Test.RestoreCommandTests
                 ["TargetFrameworksCount"] = value => value.Should().Be(1),
                 ["RuntimeIdentifiersCount"] = value => value.Should().Be(0),
                 ["TreatWarningsAsErrors"] = value => value.Should().Be(false),
+                ["SDKAnalysisLevel"] = value => value.Should().Be(null),
+                ["UsingMicrosoftNETSdk"] = value => value.Should().Be(false),
             };
 
             HashSet<string> actualProperties = new();
@@ -2933,6 +2935,8 @@ namespace NuGet.Commands.Test.RestoreCommandTests
             var projectPath = Path.Combine(pathContext.SolutionRoot, projectName);
             PackageSpec packageSpec = ProjectTestHelpers.GetPackageSpec(projectName, pathContext.SolutionRoot, "net472", "a");
             packageSpec.RestoreMetadata.ProjectWideWarningProperties.AllWarningsAsErrors = true;
+            packageSpec.RestoreMetadata.UsingMicrosoftNETSdk = true;
+            packageSpec.RestoreMetadata.SdkAnalysisLevel = NuGetVersion.Parse("9.0.100");
 
             await SimpleTestPackageUtility.CreateFolderFeedV3Async(
                 pathContext.PackageSource,
@@ -2977,7 +2981,7 @@ namespace NuGet.Commands.Test.RestoreCommandTests
 
             var projectInformationEvent = telemetryEvents.Single(e => e.Name.Equals("ProjectRestoreInformation"));
 
-            projectInformationEvent.Count.Should().Be(28);
+            projectInformationEvent.Count.Should().Be(30);
             projectInformationEvent["RestoreSuccess"].Should().Be(true);
             projectInformationEvent["NoOpResult"].Should().Be(true);
             projectInformationEvent["IsCentralVersionManagementEnabled"].Should().Be(false);
@@ -3006,6 +3010,8 @@ namespace NuGet.Commands.Test.RestoreCommandTests
             projectInformationEvent["TargetFrameworksCount"].Should().Be(1);
             projectInformationEvent["RuntimeIdentifiersCount"].Should().Be(0);
             projectInformationEvent["TreatWarningsAsErrors"].Should().Be(true);
+            projectInformationEvent["SDKAnalysisLevel"].Should().Be(NuGetVersion.Parse("9.0.100"));
+            projectInformationEvent["UsingMicrosoftNETSdk"].Should().Be(true);
         }
 
         [Fact]
@@ -3063,7 +3069,7 @@ namespace NuGet.Commands.Test.RestoreCommandTests
 
             var projectInformationEvent = telemetryEvents.Single(e => e.Name.Equals("ProjectRestoreInformation"));
 
-            projectInformationEvent.Count.Should().Be(34);
+            projectInformationEvent.Count.Should().Be(36);
             projectInformationEvent["RestoreSuccess"].Should().Be(true);
             projectInformationEvent["NoOpResult"].Should().Be(false);
             projectInformationEvent["TotalUniquePackagesCount"].Should().Be(2);
